@@ -6,15 +6,12 @@ const nunjucks = require("nunjucks");
 const { sequelize } = require("./models");
 
 const app = express();
-
-app.get("port", process.env.PORT || 3001);
+app.set("port", process.env.PORT || 3001);
 app.set("view engine", "html");
-
 nunjucks.configure("views", {
   express: app,
   watch: true,
 });
-
 sequelize
   .sync({ force: false })
   .then(() => {
@@ -40,4 +37,8 @@ app.use((err, req, res, next) => {
   res.locals.error = process.env.NODE_ENV !== "production" ? err : {};
   res.status(err.status || 500);
   res.render("error");
+});
+
+app.listen(app.get("port"), () => {
+  console.log(app.get("port"), "번 포트에서 대기 중");
 });
